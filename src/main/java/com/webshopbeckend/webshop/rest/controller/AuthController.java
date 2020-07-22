@@ -1,10 +1,12 @@
 package com.webshopbeckend.webshop.rest.controller;
 
+import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.AddressServiceImpl;
 import com.webshopbeckend.webshop.rest.services.AuthService;
 import com.webshopbeckend.webshop.rest.services.UserServiceImpl;
+import sun.rmi.runtime.Log;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,18 +34,32 @@ public class AuthController {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response authenticateUser(User user)  {
+    public Response authenticateUser(User user)  { //There is not need to check the token.
         try {
             LoggedInUser aU = authService.Login(user.getUsername(), user.getPassword());
 
-            System.out.println("Lista db: " + authService.getActiveUserListSize());
-            String token = authService.activeUserList.get(authService.getActiveUserListSize()-1).getToken();
-            System.out.println("Last User token: " + token);
+            String token = RestApplication.activeUserList.get(authService.getActiveUserListSize()-1).getToken();
 
-            return Response.ok(aU).build();
+            System.out.println("Logged in users db: "+RestApplication.activeUserList.size());
+            System.out.println("Last logged in username: "+RestApplication.activeUserList.get(RestApplication.activeUserList.size()-1).getUsername());
+
+                return Response.ok(aU).build();
 
         } catch (Exception e) {
             System.out.println("AuthController error: "+ e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/logout")
+    //@Consumes(MediaType.APPLICATION_JSON)
+    public Response logoutUser(@QueryParam("auth") String token){
+        try {
+            boolean resp = authService.Logout(token);
+            return Response.ok(resp).build();
+        } catch (Exception e) {
+            System.out.println("AuthController error: " + e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }

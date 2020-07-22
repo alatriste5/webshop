@@ -7,20 +7,31 @@ public class Product {
     String details;
     int sellerid;
     int customerid;
+    int valid;
     String image;
+
 
     public Product(){
 
     }
 
-    public Product(int id, String name, int price, String details, int sellerid, int customerid, String image) {
+    public Product(int id, String name, int price, String details, int sellerid, int customerid, int valid, String image) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.details = details;
         this.sellerid = sellerid;
         this.customerid = customerid;
+        this.valid = valid;
         this.image = image;
+    }
+
+    public int getValid() {
+        return valid;
+    }
+
+    public void setValid(int valid) {
+        this.valid = valid;
     }
 
     public int getId() {

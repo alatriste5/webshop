@@ -1,10 +1,8 @@
 package com.webshopbeckend.webshop.rest.controller;
 
 import com.webshopbeckend.webshop.rest.model.Address;
-import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.AddressService;
-import com.webshopbeckend.webshop.rest.services.AddressServiceImpl;
-import com.webshopbeckend.webshop.rest.services.UserService;
+import com.webshopbeckend.webshop.rest.services.AuthService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -18,6 +16,7 @@ import javax.ws.rs.core.Response;
 public class AddressController {
 
     private AddressService addressService;
+    private AuthService authService;
 
     public AddressController(){
 
@@ -26,11 +25,12 @@ public class AddressController {
     @Inject
     public AddressController(AddressService addressService){
         this.addressService = addressService;
+        this.authService = new AuthService();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addAddress(Address address) {
+    public Response addAddress(Address address) { //There is not need to check the token.
         try {
             int addressid = addressService.createAddress(address);
 
@@ -43,21 +43,36 @@ public class AddressController {
 
     @GET
     @Path("/{id}")
-    public Address findById(@PathParam("id") int id) {
-        return this.addressService.findById(id);
+    public Address findById(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token) {
+        if(this.authService.checkTokenIsValid(token)) {
+            return this.addressService.findById(id);
+        } else {
+            System.out.println("AddressController error - findById called with wrong token: "+token);
+        }
+        return null;
     }
 
     @DELETE
     @Path("/delete/{id}")
-    public boolean deleteAddress(@PathParam("id") int id) {
-        return this.addressService.deleteAddress(id);
+    public boolean deleteAddress(@PathParam("id") int id, @QueryParam("auth") String token) {
+        if(this.authService.checkTokenIsValid(token)) {
+            return this.addressService.deleteAddress(id);
+        } else {
+            System.out.println("AddressController error - deleteAddress called with wrong token: "+token);
+        }
+        return false;
     }
 
     @POST
     @Path("/update")
-    public boolean updateAddress(Address address) {
+    public boolean updateAddress(Address address, @QueryParam("auth") String token) {
         try {
-            return addressService.updateAddress(address);
+            if(this.authService.checkTokenIsValid(token)) {
+
+                return addressService.updateAddress(address);
+            } else {
+                System.out.println("AddressController error - updateAddress called with wrong token: "+token);
+            }
         }
         catch (Exception e){
             System.out.println("AddressController: " + e.getMessage());

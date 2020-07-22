@@ -1,7 +1,9 @@
 package com.webshopbeckend.webshop.rest.services;
 
+import com.sun.org.apache.bcel.internal.generic.RET;
 import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
+import com.webshopbeckend.webshop.rest.model.Product;
 import com.webshopbeckend.webshop.rest.model.SecretKey;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.encryption.Decoder;
@@ -15,22 +17,72 @@ import java.util.ArrayList;
 public class AuthService {
 
     public static String secretKey = SecretKey.getSecretKey();
-    public ArrayList<LoggedInUser> activeUserList; //TODO: Kivenni a publicot
     RandomString randomString;
     boolean newUserIsAlreadLoggedIn;
     UserServiceImpl userService;
+    ProductServiceImpl productService;
 
     public AuthService(){
-        activeUserList = new ArrayList<>();
+        //activeUserList = new ArrayList<>();
         randomString = new RandomString();
         userService = new UserServiceImpl();
+        productService = new ProductServiceImpl();
     }
+
+    public boolean checkTokenIsValid(String token){
+        for(int i = 0; i < RestApplication.activeUserList.size(); i++){
+           if(token.equals(RestApplication.activeUserList.get(i).getToken())){
+               return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkTokenIsValidAndAdmin(String token){
+        for(int i = 0; i < RestApplication.activeUserList.size(); i++){
+            if(token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getRole().equals("Admin")){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean checkTokenIsValidAndAdminOrOwn(String token, int id){
+        for(int i = 0; i < RestApplication.activeUserList.size(); i++){
+            if((token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getId() == id) || (
+                    token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getRole().equals("Admin")
+                    )) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkTokenIsBelongToSellerOrAdmin(String token, Product product) throws Exception {
+        try {
+            for(int i = 0; i < RestApplication.activeUserList.size(); i++) {
+                if(token.equals(RestApplication.activeUserList.get(i).getToken())){
+
+                    Product tempProd =  this.productService.findById(product.getId()); //Get the right sellerid.
+
+                    if(RestApplication.activeUserList.get(i).getId() == tempProd.getSellerid() ||
+                            "Admin".equals(RestApplication.activeUserList.get(i).getRole()) ){
+                        return true;
+                    }
+                    throw new Exception("Wrong Modifier: Update was called from wrong user.");
+                }
+                throw new Exception("Wrong Token");
+            }
+            throw new Exception("Other error");
+        }
+        catch (Exception e) {
+            System.out.println("AuthService: checkTokenIsBelongToSellerOrAdmin" + e.getMessage());
+            throw new Exception(e.getMessage());
+        }
+    }
+
 
     public LoggedInUser Login(String username, String password) throws Exception {
         try {
-            //System.out.println("Username got: "+username);
-            //System.out.println("Password got: "+password);
-
             newUserIsAlreadLoggedIn = false;
             if (RestApplication.con != null) {
                 String encryptedPassword = Decoder.encrypt(password,secretKey);
@@ -67,7 +119,7 @@ public class AuthService {
                     if(newUserIsAlreadLoggedIn){
                         throw new Exception("User already logged in");
                     } else {
-                        activeUserList.add(justLoggedInUser);
+                        RestApplication.activeUserList.add(justLoggedInUser);
                         return justLoggedInUser;
                     }
                 }
@@ -81,9 +133,22 @@ public class AuthService {
         }
     }
 
+    public boolean Logout(String token){
+        System.out.println("AuthService - logout elotti db: " + RestApplication.activeUserList.size());
+        for(int i = 0; i < RestApplication.activeUserList.size(); i++){
+            if(token.equals(RestApplication.activeUserList.get(i).getToken())){
+                System.out.println("Logged out user: "+RestApplication.activeUserList.get(i).getUsername());
+                RestApplication.activeUserList.remove(i);
+                System.out.println("AuthService - logout utani db: " + RestApplication.activeUserList.size());
+                return true;
+            }
+        };
+        return false;
+    }
+
     private void CheckUserCanlLogin(LoggedInUser justLoggedInUser){
-        if(activeUserList.size() > 0){
-            activeUserList.forEach((i) -> validateUserIsLoggedIn(i,justLoggedInUser));
+        if(RestApplication.activeUserList.size() > 0){
+            RestApplication.activeUserList.forEach((i) -> validateUserIsLoggedIn(i,justLoggedInUser));
         }
     }
     private void validateUserIsLoggedIn(LoggedInUser alreadyLoggedIn, LoggedInUser tryToLogin){
@@ -93,7 +158,7 @@ public class AuthService {
     }
 
     public int getActiveUserListSize(){
-        return activeUserList.size();
+        return RestApplication.activeUserList.size();
     }
 
 }

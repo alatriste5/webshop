@@ -8,10 +8,10 @@ public interface ProductService {
     boolean addProduct(Product product);
     Product findById(int id);
     List<Product> findAllProduct();
-    //List<ProductWithUsername> findAllProduct();
-    List<Product> findAllValidProduct();
+    List<Product> findAllValidProduct(int val);
     int productCount();
     boolean deleteById(int id);
     Product updateProduct(Product product);
+    boolean setProductValid(int id);
 
 }

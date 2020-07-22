@@ -94,6 +94,7 @@ public class AddressServiceImpl implements AddressService{
                 }
             }
         } catch (Exception e) {
+            System.out.println("AddressServiceImpl - findById error: ");
             System.out.println(e.getMessage());
         }
         return null;

@@ -49,8 +49,6 @@ public class ProductServiceImpl implements ProductService {
             System.out.println(e.getMessage());
         }
         return false;
-        /*System.out.println(product);
-        return true;*/
     }
 
     @Override
@@ -69,6 +67,7 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getInt("valid"),
                             rs.getString("image")
                     );
                     hasres = true;
@@ -87,7 +86,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProduct() {
         productList.clear();
-        //prodWithUserList.clear();
         try {
             if (RestApplication.con != null) {
                 String sql = "SELECT * FROM products";
@@ -101,16 +99,11 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getInt("valid"),
                             rs.getString("image")
                     );
-                    /*User u = new User(
-                            rs.getString("username")
-                    );*/
                     productList.add(p);
-                    //ProductWithUsername pwU = new ProductWithUsername(p,u);
-                    //prodWithUserList.add(pwU);
                 }
-                //return prodWithUserList;
                 return productList;
             } else {
                 return null;
@@ -121,11 +114,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public List<Product> findAllValidProduct() {
+    public List<Product> findAllValidProduct(int val) {
         productList.clear();
         try {
             if (RestApplication.con != null) {
-                String sql = "SELECT * FROM products JOIN user ON user.id = products.sellerid WHERE valid = 1";
+                String sql = "SELECT * FROM products WHERE valid = "+val;
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
@@ -136,6 +129,7 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getInt("valid"),
                             rs.getString("image")
                     );
                     productList.add(p);
@@ -149,6 +143,8 @@ public class ProductServiceImpl implements ProductService {
             return null;
         }
     }
+
+
 
     @Override
     public int productCount() {
@@ -181,8 +177,6 @@ public class ProductServiceImpl implements ProductService {
                 String tempname = product.getName();
                 int tempPrice = product.getPrice();
                 String tempDetails = product.getDetails();
-                /*int tempSeller = product.getSellerid();*/
-                int tempCustomer = product.getCustomerid();
                 String tempImage = product.getImage();
 
                 if ((currentProd.getName() != tempname) && (tempname != null))
@@ -191,10 +185,6 @@ public class ProductServiceImpl implements ProductService {
                     currentProd.setPrice(tempPrice);
                 if((currentProd.getDetails() != tempDetails) && (tempDetails != null))
                     currentProd.setDetails(tempDetails);
-                /*if ((currentProd.getSellerid() != tempSeller) && (tempSeller != 0))
-                    currentProd.setSellerid(tempSeller);*/
-                if ((currentProd.getCustomerid() != tempCustomer) && (tempCustomer != 0))
-                    currentProd.setCustomerid(tempCustomer);
                 if((currentProd.getImage() != tempImage) && (tempImage != null))
                     currentProd.setImage(tempImage);
 
@@ -202,7 +192,6 @@ public class ProductServiceImpl implements ProductService {
                         "`name` = '" + currentProd.getName() + "', " +
                         "`price` = '" + currentProd.getPrice() + "', " +
                         "`details` = '" + currentProd.getDetails() + "', " +
-                        "`customerid` = '" + currentProd.getCustomerid() + "', " +
                         "`image` = '" + currentProd.getImage() + "' " +
                         "WHERE `products`.`id` = " + currentProd.getId() + ";";
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
@@ -212,9 +201,28 @@ public class ProductServiceImpl implements ProductService {
 
             }
         } catch (Exception e) {
+            System.out.println("ProductServiceImpl error updateProduct: ");
             System.out.println(e.getMessage());
         }
         return product;
+    }
+
+    @Override
+    public boolean setProductValid(int id) {
+        try {
+            if (RestApplication.con != null) {
+                String sql = "UPDATE `products` SET " +
+                        "`valid` = 1 " +
+                        "WHERE `products`.`id` = " + id + ";";
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                statement.executeUpdate();
+
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
     //002

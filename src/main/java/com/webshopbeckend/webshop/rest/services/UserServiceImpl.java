@@ -42,7 +42,7 @@ public class UserServiceImpl  implements UserService {
             }
             throw new Exception("Can not add this user");
         } catch (Exception e) {
-            System.out.println("UserServiceImpl? " + e.getMessage());
+            System.out.println("UserServiceImpl: " + e.getMessage());
             throw new Exception(e.getMessage());
         }
 
