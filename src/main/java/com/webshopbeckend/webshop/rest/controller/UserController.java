@@ -56,8 +56,9 @@ public class UserController {
     @Path("/update")
     public Response updateUser(User user, @QueryParam("auth") String token) {
         try {
-            if(this.authService.checkTokenIsValid(token)) {
-                boolean success = userService.updateUser(user);
+            boolean isadmin = this.authService.checkTokenIsValidAndAdmin(token);
+            if(isadmin || this.authService.checkTokenIsValid(token)) {
+                boolean success = userService.updateUser(user, isadmin);
                 if(success) {
                     return Response.ok(success).build();
                 }
@@ -66,7 +67,7 @@ public class UserController {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Wrong token").build();
             }
         } catch (Exception e) {
-            System.out.println("UserController error: "+ e.getMessage());
+            System.out.println("UserController - updateUser error: "+ e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
         return null;

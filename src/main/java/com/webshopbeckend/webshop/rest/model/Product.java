@@ -1,5 +1,7 @@
 package com.webshopbeckend.webshop.rest.model;
 
+import java.util.Date;
+
 public class Product {
     int id;
     String name;
@@ -7,6 +9,7 @@ public class Product {
     String details;
     int sellerid;
     int customerid;
+    private Date soldat;
     int valid;
     String image;
 
@@ -15,13 +18,14 @@ public class Product {
 
     }
 
-    public Product(int id, String name, int price, String details, int sellerid, int customerid, int valid, String image) {
+    public Product(int id, String name, int price, String details, int sellerid, int customerid, Date soldat, int valid, String image) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.details = details;
         this.sellerid = sellerid;
         this.customerid = customerid;
+        this.soldat = soldat;
         this.valid = valid;
         this.image = image;
     }
@@ -84,5 +88,13 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Date getSoldat() {
+        return soldat;
+    }
+
+    public void setSoldat(Date soldat) {
+        this.soldat = soldat;
     }
 }

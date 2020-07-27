@@ -50,7 +50,7 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public User findById(int id) {
-        boolean hasres = false;
+        System.out.println("UserServiceImpl - findById called");
         try {
             if (RestApplication.con != null) {
                 String sql = "SELECT * FROM user WHERE user.id = " + id + ";";
@@ -61,18 +61,15 @@ public class UserServiceImpl  implements UserService {
                             rs.getInt("id"),
                             rs.getString("username"),
                             rs.getString("name"),
-                            Decoder.decrypt(rs.getString("password"), secretKey),
+                            null,//Decoder.decrypt(rs.getString("password"), secretKey),
                             rs.getString("email"),
                             rs.getInt("addressid"),
                             rs.getString("role"),
                             rs.getDate("createdat")
                     );
-                    hasres = true;
+                    System.out.println("Curr user: "+temp.getUsername());
                     return temp;
                 }
-            }
-            if (!hasres) {
-                return null;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -183,14 +180,16 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public boolean updateUser(User user) throws Exception {
+    public boolean updateUser(User user, boolean isadmin) throws Exception {
         try {
             if (RestApplication.con != null) {
                 User currentUser = findById(user.getId());
-                
-                String tempPassword = user.getPassword();
+                currentUser.setPassword(getUserPassword(user.getId()));
 
-                if(tempPassword.equals(currentUser.getPassword())) {
+                String tempPassword = Decoder.encrypt(user.getPassword(),secretKey);
+
+
+                if(tempPassword.equals(currentUser.getPassword()) || isadmin) {
 
                     String dataExistCheck = this.checkUsernameOrEmailExist(user,currentUser, false);
 
@@ -208,7 +207,6 @@ public class UserServiceImpl  implements UserService {
                             "`name` = '" + user.getName() + "', " +
                             "`password` = '" + Decoder.encrypt(user.getPassword(), secretKey) + "', " +
                             "`email` = '" + user.getEmail() + "', " +
-                            "`role` = '" + user.getRole() + "' " +
                             "WHERE id = " + currentUser.getId() + ";";
                     PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                     statement.executeUpdate();
@@ -224,6 +222,23 @@ public class UserServiceImpl  implements UserService {
             throw new Exception(e.getMessage());
         }
         return false;
+    }
+
+    private String getUserPassword(int id){
+        try {
+            if (RestApplication.con != null) {
+                String sql = "SELECT password FROM user WHERE user.id = " + id + ";";
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    String password = rs.getString("password");
+                    return password;
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -247,7 +262,6 @@ public class UserServiceImpl  implements UserService {
 
     private String checkUsernameOrEmailExist(User user, User UpdateCurrentUser, boolean newTrueOrUpdateFalse){
         ArrayList<User> allUser = this.findAllUser();
-        System.out.println(allUser.size());
         if(!newTrueOrUpdateFalse){
             for(int i=0; i < allUser.size(); i++) {
                 if(allUser.get(i).getId() == UpdateCurrentUser.getId()){
@@ -255,7 +269,6 @@ public class UserServiceImpl  implements UserService {
                 }
             }
         }
-        System.out.println(allUser.size());
 
         String tempUsername = user.getUsername();
         String tempEmail = user.getEmail();

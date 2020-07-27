@@ -11,6 +11,6 @@ public interface UserService {
     List<User> findAllUser();
     int userCount();
     boolean deleteById(int id);
-    boolean updateUser(User user) throws Exception;
+    boolean updateUser(User user, boolean isadmin) throws Exception;
     boolean updateUserAddressId(User user);
 }

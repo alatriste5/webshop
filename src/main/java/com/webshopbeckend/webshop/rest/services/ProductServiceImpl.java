@@ -4,16 +4,7 @@ import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.Product;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -67,6 +58,7 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getDate("soldat"),
                             rs.getInt("valid"),
                             rs.getString("image")
                     );
@@ -99,6 +91,7 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getDate("soldat"),
                             rs.getInt("valid"),
                             rs.getString("image")
                     );
@@ -114,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public List<Product> findAllValidProduct(int val) {
+    public List<Product> findAllProductByValid(int val) {
         productList.clear();
         try {
             if (RestApplication.con != null) {
@@ -129,6 +122,7 @@ public class ProductServiceImpl implements ProductService {
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getDate("soldat"),
                             rs.getInt("valid"),
                             rs.getString("image")
                     );
@@ -144,7 +138,37 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
+    @Override
+    public List<Product> findAllProductByCustomeriId(int id) {
+        productList.clear();
+        try {
+            if (RestApplication.con != null) {
+                String sql = "SELECT * FROM products WHERE customerid = "+id;
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    Product p = new Product(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getInt("price"),
+                            rs.getString("details"),
+                            rs.getInt("sellerid"),
+                            rs.getInt("customerid"),
+                            rs.getDate("soldat"),
+                            rs.getInt("valid"),
+                            rs.getString("image")
+                    );
+                    productList.add(p);
+                }
+                return productList;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
     @Override
     public int productCount() {
@@ -225,52 +249,54 @@ public class ProductServiceImpl implements ProductService {
         return false;
     }
 
-    //002
-    /*
-    public Response ShowImagetest2(){
+    @Override
+    public List<Product> findProductsBySeller(int id) {
+        productList.clear();
         try {
             if (RestApplication.con != null) {
-                String sql = "SELECT * FROM imagetest WHERE imagetest.id = 1;";
+                String sql = "SELECT * FROM products WHERE sellerid = " + id;
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
-                    Product temp = new Product(
+                    Product p = new Product(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getInt("price"),
                             rs.getString("details"),
                             rs.getInt("sellerid"),
                             rs.getInt("customerid"),
+                            rs.getDate("soldat"),
+                            rs.getInt("valid"),
                             rs.getString("image")
                     );
+                    productList.add(p);
                 }
+                return productList;
+            } else {
+                return null;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
         }
     }
-*/
 
-    //001 probálkozá
-    /*
-    public Response ShowImagetest() {
-        BufferedImage image = null;
+    @Override
+    public boolean sellProduct(int productid, int customerid) {
         try {
-            image = ImageIO.read(new File("C:\\Users\\balaz\\OneDrive\\Asztali gép\\letöltés.png"));
+            if (RestApplication.con != null) {
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                String sql = "UPDATE `products` SET `customerid` = '" + customerid + "', `valid` = '" + 2 + "', " +
+                        "`soldat` = now() WHERE `products`.`id` = " + productid + ";";
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                statement.executeUpdate();
+
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("ProductServiceImpl error sellProduct: ");
+            System.out.println(e.getMessage());
         }
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
-            byte[] imageData = baos.toByteArray();
-            return Response.ok(imageData).build();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return false;
     }
-
-     */
 }

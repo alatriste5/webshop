@@ -47,7 +47,7 @@ public class ProductController {
     @Path("/valid")
     public Collection<Product> findAllValidProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValid(token)){
-            return this.productService.findAllValidProduct(1);
+            return this.productService.findAllProductByValid(1);
         }
         else {
             System.out.println("ProductController error - findAllValidProduct called with wrong token: "+token);
@@ -59,10 +59,34 @@ public class ProductController {
     @Path("/unvalid")
     public Collection<Product> findAllUnValidProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValidAndAdmin(token)){
-            return this.productService.findAllValidProduct(0);
+            return this.productService.findAllProductByValid(0);
         }
         else{
             System.out.println("ProductController error - findAllUnValidProduct called with wrong token: "+token);
+            return null;
+        }
+    }
+
+    @GET
+    @Path("/sold")
+    public Collection<Product> findAllSoldProduct(@DefaultValue("") @QueryParam("auth") String token){
+        if(this.authService.checkTokenIsValid(token)){
+            return this.productService.findAllProductByValid(2);
+        }
+        else{
+            System.out.println("ProductController error - findAllSoldProduct called with wrong token: "+token);
+            return null;
+        }
+    }
+    @GET
+    @Path("/purchases/{id}")
+    public Collection<Product> findAllProductByCustomer(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token){
+
+        if(this.authService.checkTokenIsValid(token)){
+            return this.productService.findAllProductByCustomeriId(id);
+        }
+        else{
+            System.out.println("ProductController error - findAllProductByCustomer called with wrong token: "+token);
             return null;
         }
     }
@@ -110,7 +134,7 @@ public class ProductController {
             if(this.authService.checkTokenIsBelongToSellerOrAdmin(token,prod)){
                 this.productService.updateProduct(prod);
 
-                return Response.ok().build();
+                return Response.status(200,"lofasz").build();
             }
         } catch (Exception e) {
             System.out.println("ProductController error: "+ e.getMessage());
@@ -136,5 +160,32 @@ public class ProductController {
         }
     }
 
+    @GET
+    @Path("/ownvalid/{sellerid}")
+    public Collection<Product> findProductsBySeller(@PathParam("sellerid") int sellerid, @DefaultValue("") @QueryParam("auth") String token){
+        if(this.authService.checkTokenIsValid(token)) {
+            return this.productService.findProductsBySeller(sellerid);
+        }
+        else{
+            System.out.println("ProductController error - findProductsBySellerAndValidAnd called with wrong token: "+token);
+            return null;
+        }
+    }
+
+    @PUT
+    @Path("/sell")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean sellProduct(Product prod, @QueryParam("auth") String token) {
+        try {
+            if(this.authService.checkTokenIsValid(token)){
+                this.productService.sellProduct(prod.getId(),prod.getCustomerid());
+
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("ProductController error: "+ e.getMessage());
+        }
+        return false;
+    }
 
 }
