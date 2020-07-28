@@ -63,7 +63,7 @@ public class UserController {
                     return Response.ok(success).build();
                 }
             } else {
-                System.out.println("UserController error - updateUserByUsername called with wrong token: "+token);
+                System.out.println("UserController error - updateUser called with wrong token: "+token);
                 return Response.status(Response.Status.BAD_REQUEST).entity("Wrong token").build();
             }
         } catch (Exception e) {
@@ -83,13 +83,6 @@ public class UserController {
             }
         return false;
     }
-/*
-    @GET
-    @Path("/count")
-    public int count(){
-        return this.userService.userCount();
-    }
-*/
 
     @GET
     @Path("/{id}")
@@ -120,6 +113,30 @@ public class UserController {
     public boolean deleteUser(@PathParam("id") int id) {
         return this.userService.deleteById(id);
     }
+
+    @POST
+    @Path("/updateasadmin")
+    public Response updateUserAsAdmin(User user, @QueryParam("auth") String token) {
+        try {
+
+            String check = this.authService.checkTokenIsValidAndAdmin2(token, user.getPassword());
+
+            if(check == "ok") {
+                boolean success = userService.updateUserAsAdmin(user);
+                if(success) {
+                    return Response.ok(success).build();
+                }
+            } else {
+                System.out.println("UserController error: "+check);
+                return Response.status(Response.Status.BAD_REQUEST).entity(check).build();
+            }
+        } catch (Exception e) {
+            System.out.println("UserController - updateUserAsAdmin error: "+ e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+        return null;
+    }
+
 
 
 }

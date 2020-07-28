@@ -50,7 +50,6 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public User findById(int id) {
-        System.out.println("UserServiceImpl - findById called");
         try {
             if (RestApplication.con != null) {
                 String sql = "SELECT * FROM user WHERE user.id = " + id + ";";
@@ -67,7 +66,6 @@ public class UserServiceImpl  implements UserService {
                             rs.getString("role"),
                             rs.getDate("createdat")
                     );
-                    System.out.println("Curr user: "+temp.getUsername());
                     return temp;
                 }
             }
@@ -158,12 +156,6 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public int userCount() {
-        this.findAllUser();
-        return userList.size();
-    }
-
-    @Override
     public boolean deleteById(int id) {
         try {
             if (RestApplication.con != null) {
@@ -188,7 +180,6 @@ public class UserServiceImpl  implements UserService {
 
                 String tempPassword = Decoder.encrypt(user.getPassword(),secretKey);
 
-
                 if(tempPassword.equals(currentUser.getPassword()) || isadmin) {
 
                     String dataExistCheck = this.checkUsernameOrEmailExist(user,currentUser, false);
@@ -206,8 +197,9 @@ public class UserServiceImpl  implements UserService {
                             "`username` = '" + user.getUsername() + "', " +
                             "`name` = '" + user.getName() + "', " +
                             "`password` = '" + Decoder.encrypt(user.getPassword(), secretKey) + "', " +
-                            "`email` = '" + user.getEmail() + "', " +
+                            "`email` = '" + user.getEmail() + "' " +
                             "WHERE id = " + currentUser.getId() + ";";
+                    System.out.println(sql);
                     PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                     statement.executeUpdate();
 
@@ -218,13 +210,13 @@ public class UserServiceImpl  implements UserService {
                 }
             }
         } catch (Exception e) {
-            System.out.println("UserServiceImpl: " + e.getMessage());
+            System.out.println("UserServiceImpl error updateUser: " + e.getMessage());
             throw new Exception(e.getMessage());
         }
         return false;
     }
 
-    private String getUserPassword(int id){
+    public String getUserPassword(int id){
         try {
             if (RestApplication.con != null) {
                 String sql = "SELECT password FROM user WHERE user.id = " + id + ";";
@@ -236,7 +228,7 @@ public class UserServiceImpl  implements UserService {
                 }
             }
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            System.out.println("UserServiceImpl error - getUserPassword: "+ throwables.getMessage());
         }
         return null;
     }
@@ -248,6 +240,28 @@ public class UserServiceImpl  implements UserService {
                 String sql = "UPDATE `user` SET " +
                         "`addressid` = " + user.getAddressid() +
                         " WHERE username = '" +  user.getUsername() + "';";
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+
+                statement.executeUpdate();
+
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUserAsAdmin(User user) {
+        try {
+            if(RestApplication.con != null) {
+                String sql = "UPDATE `user` SET " +
+                        "`username` = '" + user.getUsername() + "', " +
+                        "`name` = '" + user.getName() + "', " +
+                        "`email` = '" + user.getEmail() + "', " +
+                        "`role` = '" + user.getRole() + "' " +
+                        " WHERE id = " +  user.getId() + ";";
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
 
                 statement.executeUpdate();

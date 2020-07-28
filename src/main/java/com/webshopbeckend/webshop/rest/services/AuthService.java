@@ -23,7 +23,6 @@ public class AuthService {
     ProductServiceImpl productService;
 
     public AuthService(){
-        //activeUserList = new ArrayList<>();
         randomString = new RandomString();
         userService = new UserServiceImpl();
         productService = new ProductServiceImpl();
@@ -46,6 +45,24 @@ public class AuthService {
         }
         return false;
     }
+    public String checkTokenIsValidAndAdmin2(String token, String password){
+        for(int i = 0; i < RestApplication.activeUserList.size(); i++){
+            if(token.equals(RestApplication.activeUserList.get(i).getToken())) {
+                if(RestApplication.activeUserList.get(i).getRole().equals("Admin")){
+                    String oldpsw = userService.getUserPassword(RestApplication.activeUserList.get(i).getId());
+                    if(oldpsw.equals(Decoder.encrypt(password, secretKey))){
+                        return "ok";
+                    }
+                    return "Token is belongs to admin but the admin own password wasn't correct";
+                }
+                return "This token is not belongs to an admin";
+            }
+            return "Token not found";
+        }
+        return "List was empty";
+    }
+
+
     public boolean checkTokenIsValidAndAdminOrOwn(String token, int id){
         for(int i = 0; i < RestApplication.activeUserList.size(); i++){
             if((token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getId() == id) || (

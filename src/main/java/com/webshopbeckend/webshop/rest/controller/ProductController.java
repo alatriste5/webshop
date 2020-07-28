@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     //Not used yet
-    @GET
+    /*@GET
     public Collection<Product> findAllProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValidAndAdmin(token)){
             return this.productService.findAllProduct();
@@ -41,7 +41,7 @@ public class ProductController {
             System.out.println("ProductController error - findAllProduct called with wrong token: "+token);
             return null;
         }
-    }
+    }*/
 
     @GET
     @Path("/valid")
