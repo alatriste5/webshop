@@ -25,7 +25,7 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public boolean addUser(User user) throws Exception {
+    public String addUser(User user) throws Exception {
         try {
             if (RestApplication.con != null) {
                 String sql = "INSERT INTO `user` (`id`, `username`, `name`, `email`," +
@@ -34,18 +34,17 @@ public class UserServiceImpl  implements UserService {
                         + user.getName() + "', '"
                         + user.getEmail() + "', '"
                         + Decoder.encrypt(user.getPassword(),secretKey) + "', '"
-                        + user.getAddressid() /*addressid*/ + "', '"
+                        + user.getAddressid() + "', '"
                         + "User');";
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                 statement.executeUpdate();
-                return true;
+                return user.getUsername();
             }
             throw new Exception("Can not add this user");
         } catch (Exception e) {
             System.out.println("UserServiceImpl: " + e.getMessage());
             throw new Exception(e.getMessage());
         }
-
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.webshopbeckend.webshop.rest.model.User;
 import java.util.List;
 
 public interface UserService {
-    boolean addUser(User user) throws Exception;
+    String addUser(User user) throws Exception;
     User findById(int id);
     User getUsername(int id);
     List<User> findAllUser();

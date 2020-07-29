@@ -43,9 +43,9 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User user) { //There is not need to check the token.
         try {
-            boolean added = userService.addUser(user);
-
-            return Response.ok(added).build();
+            String newUserName = userService.addUser(user);
+            System.out.println("New user signed up: " + newUserName);
+            return Response.status(200,newUserName).build();
         } catch (Exception e) {
             System.out.println("UserController" + e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -76,7 +76,9 @@ public class UserController {
     @POST
     @Path("/updatebyusername") //There is not need a token -> this called just after the user create first addresss
     public boolean updateUserByUsername(User user) {
+        System.out.println("updateUserByUsername called with " + user.getUsername());
             if (userService.updateUserAddressId(user)){
+                System.out.println("elvileg fasza");
                 return true;
             } else {
                 System.out.println("UserController error - updateUserByUsername");
@@ -110,8 +112,19 @@ public class UserController {
 
     @DELETE
     @Path("/delete/{id}")
-    public boolean deleteUser(@PathParam("id") int id) {
-        return this.userService.deleteById(id);
+    public boolean deleteUser(@PathParam("id") int id, @QueryParam("auth") String token) {
+        if(this.authService.checkTokenIsValidAndAdmin(token)) {
+            boolean success = this.userService.deleteById(id);
+            if (success){
+                System.out.println("User deleted with this id: " + id);
+                return true;
+            }
+        }
+        else {
+            System.out.println("UserController error - deleteUser called with wrong token: "+token);
+            return false;
+        }
+        return false;
     }
 
     @POST

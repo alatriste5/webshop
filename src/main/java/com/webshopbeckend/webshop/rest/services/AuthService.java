@@ -55,9 +55,9 @@ public class AuthService {
                         RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                         return "ok";
                     }
-                    return "Token is belongs to admin but the admin own password wasn't correct";
+                    return "Admin password wasn't correct";
                 }
-                return "This token is not belongs to an admin";
+                return "You are not admin";
             }
             return "Token not found";
         }

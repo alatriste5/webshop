@@ -134,7 +134,7 @@ public class ProductController {
             if(this.authService.checkTokenIsBelongToSellerOrAdmin(token,prod)){
                 this.productService.updateProduct(prod);
 
-                return Response.status(200,"lofasz").build();
+                return Response.status(200,"ok").build();
             }
         } catch (Exception e) {
             System.out.println("ProductController error: "+ e.getMessage());
