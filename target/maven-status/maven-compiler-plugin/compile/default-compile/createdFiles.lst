@@ -8,6 +8,7 @@ com\webshopbeckend\webshop\rest\model\User.class
 com\webshopbeckend\webshop\rest\controller\ProductController.class
 com\webshopbeckend\webshop\rest\controller\AddressController.class
 com\webshopbeckend\webshop\rest\controller\UserController.class
+com\webshopbeckend\webshop\rest\RestApplication$1.class
 com\webshopbeckend\webshop\rest\model\SecretKey.class
 com\webshopbeckend\webshop\rest\controller\AuthController.class
 com\webshopbeckend\webshop\rest\RestApplication.class

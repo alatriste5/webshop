@@ -55,6 +55,7 @@ public class AuthController {
     @Path("/logout")
     //@Consumes(MediaType.APPLICATION_JSON)
     public Response logoutUser(@QueryParam("auth") String token){
+        System.out.println("Logout called");
         try {
             boolean resp = authService.Logout(token);
             return Response.ok(resp).build();

@@ -199,7 +199,6 @@ public class UserServiceImpl  implements UserService {
                             "`password` = '" + Decoder.encrypt(user.getPassword(), secretKey) + "', " +
                             "`email` = '" + user.getEmail() + "' " +
                             "WHERE id = " + currentUser.getId() + ";";
-                    System.out.println(sql);
                     PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                     statement.executeUpdate();
 

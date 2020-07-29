@@ -1,6 +1,5 @@
 package com.webshopbeckend.webshop.rest.services;
 
-import com.sun.org.apache.bcel.internal.generic.RET;
 import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
 import com.webshopbeckend.webshop.rest.model.Product;
@@ -11,7 +10,7 @@ import com.webshopbeckend.webshop.rest.services.tokengenerate.RandomString;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.Date;
 
 
 public class AuthService {
@@ -31,6 +30,7 @@ public class AuthService {
     public boolean checkTokenIsValid(String token){
         for(int i = 0; i < RestApplication.activeUserList.size(); i++){
            if(token.equals(RestApplication.activeUserList.get(i).getToken())){
+               RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                return true;
             }
         }
@@ -40,6 +40,7 @@ public class AuthService {
     public boolean checkTokenIsValidAndAdmin(String token){
         for(int i = 0; i < RestApplication.activeUserList.size(); i++){
             if(token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getRole().equals("Admin")){
+                RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                 return true;
             }
         }
@@ -51,6 +52,7 @@ public class AuthService {
                 if(RestApplication.activeUserList.get(i).getRole().equals("Admin")){
                     String oldpsw = userService.getUserPassword(RestApplication.activeUserList.get(i).getId());
                     if(oldpsw.equals(Decoder.encrypt(password, secretKey))){
+                        RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                         return "ok";
                     }
                     return "Token is belongs to admin but the admin own password wasn't correct";
@@ -68,6 +70,7 @@ public class AuthService {
             if((token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getId() == id) || (
                     token.equals(RestApplication.activeUserList.get(i).getToken()) && RestApplication.activeUserList.get(i).getRole().equals("Admin")
                     )) {
+                RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                 return true;
             }
         }
@@ -83,6 +86,7 @@ public class AuthService {
 
                     if(RestApplication.activeUserList.get(i).getId() == tempProd.getSellerid() ||
                             "Admin".equals(RestApplication.activeUserList.get(i).getRole()) ){
+                        RestApplication.activeUserList.get(i).setRegisteredIn(new Date());
                         return true;
                     }
                     throw new Exception("Wrong Modifier: Update was called from wrong user.");
@@ -151,12 +155,12 @@ public class AuthService {
     }
 
     public boolean Logout(String token){
-        System.out.println("AuthService - logout elotti db: " + RestApplication.activeUserList.size());
+        int before = RestApplication.activeUserList.size();
         for(int i = 0; i < RestApplication.activeUserList.size(); i++){
             if(token.equals(RestApplication.activeUserList.get(i).getToken())){
                 System.out.println("Logged out user: "+RestApplication.activeUserList.get(i).getUsername());
                 RestApplication.activeUserList.remove(i);
-                System.out.println("AuthService - logout utani db: " + RestApplication.activeUserList.size());
+                System.out.println("AuthService - logout elotti db: " + before + " utani db: " + RestApplication.activeUserList.size());
                 return true;
             }
         };
