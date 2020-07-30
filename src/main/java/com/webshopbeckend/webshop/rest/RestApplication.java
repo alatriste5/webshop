@@ -68,4 +68,6 @@ public class RestApplication extends Application {
         System.out.println("Autologgout went through. The result: There was " + beforenumber+ " active user. Removed: " + (beforenumber-activeUserList.size()) + ". Current active user: "+ activeUserList.size());
     }
 
+
+
 }

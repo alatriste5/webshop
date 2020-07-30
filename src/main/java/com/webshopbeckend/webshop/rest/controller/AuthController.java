@@ -6,7 +6,6 @@ import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.AddressServiceImpl;
 import com.webshopbeckend.webshop.rest.services.AuthService;
 import com.webshopbeckend.webshop.rest.services.UserServiceImpl;
-import sun.rmi.runtime.Log;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,8 +39,8 @@ public class AuthController {
 
             String token = RestApplication.activeUserList.get(authService.getActiveUserListSize()-1).getToken();
 
-            System.out.println("Logged in users db: "+RestApplication.activeUserList.size());
-            System.out.println("Last logged in username: "+RestApplication.activeUserList.get(RestApplication.activeUserList.size()-1).getUsername());
+            System.out.println("Last logged in username: "+RestApplication.activeUserList.get(RestApplication.activeUserList.size()-1).getUsername() +
+                    "Active users db: "+RestApplication.activeUserList.size());
 
                 return Response.ok(aU).build();
 

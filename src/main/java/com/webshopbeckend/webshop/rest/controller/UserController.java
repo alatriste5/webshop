@@ -110,21 +110,26 @@ public class UserController {
         }
     }
 
-    @DELETE
-    @Path("/delete/{id}")
-    public boolean deleteUser(@PathParam("id") int id, @QueryParam("auth") String token) {
-        if(this.authService.checkTokenIsValidAndAdmin(token)) {
-            boolean success = this.userService.deleteById(id);
-            if (success){
-                System.out.println("User deleted with this id: " + id);
-                return true;
+    @POST
+    @Path("/delete")
+    public Response deleteUser(User user, @QueryParam("auth") String token) {
+        try {
+        String check = this.authService.checkTokenIsValidAndAdmin2(token, user.getPassword());
+            if(check == "ok") {
+                boolean success = this.userService.deleteById(user.getId());
+                if (success){
+                    System.out.println("User deleted: " + user.getUsername());
+                    return Response.ok(success).build();
+                }
+            } else {
+                System.out.println("UserController error: "+check);
+                return Response.status(Response.Status.BAD_REQUEST).entity(check).build();
             }
+        } catch (Exception e) {
+            System.out.println("UserController - deleteUser error: "+ e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-        else {
-            System.out.println("UserController error - deleteUser called with wrong token: "+token);
-            return false;
-        }
-        return false;
+        return null;
     }
 
     @POST
@@ -149,7 +154,5 @@ public class UserController {
         }
         return null;
     }
-
-
 
 }

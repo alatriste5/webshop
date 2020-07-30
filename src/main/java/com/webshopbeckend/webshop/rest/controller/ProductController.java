@@ -2,7 +2,6 @@ package com.webshopbeckend.webshop.rest.controller;
 
 import com.webshopbeckend.webshop.rest.model.Product;
 import com.webshopbeckend.webshop.rest.services.AuthService;
-import com.webshopbeckend.webshop.rest.services.ProductService;
 import com.webshopbeckend.webshop.rest.services.ProductServiceImpl;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,18 +29,6 @@ public class ProductController {
         this.productService = productServiceImpl;
         this.authService = new AuthService();
     }
-
-    //Not used yet
-    /*@GET
-    public Collection<Product> findAllProduct(@DefaultValue("") @QueryParam("auth") String token){
-        if(this.authService.checkTokenIsValidAndAdmin(token)){
-            return this.productService.findAllProduct();
-        }
-        else{
-            System.out.println("ProductController error - findAllProduct called with wrong token: "+token);
-            return null;
-        }
-    }*/
 
     @GET
     @Path("/valid")
@@ -142,13 +129,7 @@ public class ProductController {
         }
         return null;
     }
-/*
-    @GET
-    @Path("/count")
-    public int count(){
-        return this.productService.productCount();
-    }
-*/
+
     @DELETE
     @Path("/delete/{id}")
     public boolean deleteProduct(@PathParam("id") int id, @QueryParam("auth") String token) {

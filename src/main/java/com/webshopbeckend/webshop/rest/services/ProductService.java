@@ -16,5 +16,6 @@ public interface ProductService {
     boolean setProductValid(int id);
     List<Product> findProductsBySeller(int sellerid);
     boolean sellProduct(int id,int customerid);
+    boolean deleteUnSoldProductsBySeller(int sellerid);
 
 }

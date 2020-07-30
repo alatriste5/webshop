@@ -107,7 +107,7 @@ public class AuthService {
             newUserIsAlreadLoggedIn = false;
             if (RestApplication.con != null) {
                 String encryptedPassword = Decoder.encrypt(password,secretKey);
-                String sql = "SELECT * FROM user WHERE user.username = '" + username + "' AND user.password = '" +
+                String sql = "SELECT * FROM user WHERE valid = 0 AND user.username = '" + username + "' AND user.password = '" +
                        encryptedPassword +"';";
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                 ResultSet rs = statement.executeQuery();

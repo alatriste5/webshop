@@ -299,4 +299,22 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
+    @Override
+    public boolean deleteUnSoldProductsBySeller(int sellerid) {
+        productList.clear();
+        try {
+            if (RestApplication.con != null) {
+                String sql = "DELETE FROM `products` WHERE (sellerid = " + sellerid + " && valid = 0) || (sellerid = " + sellerid + " && valid = 1)";
+                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                statement.execute();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }

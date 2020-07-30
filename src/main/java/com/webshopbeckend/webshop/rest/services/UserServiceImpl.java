@@ -1,12 +1,14 @@
 package com.webshopbeckend.webshop.rest.services;
 
 import com.webshopbeckend.webshop.rest.RestApplication;
+import com.webshopbeckend.webshop.rest.model.Product;
 import com.webshopbeckend.webshop.rest.model.SecretKey;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.encryption.Decoder;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -17,11 +19,13 @@ public class UserServiceImpl  implements UserService {
     private ArrayList<User> userList;
     public static String secretKey = SecretKey.getSecretKey();
     private AddressServiceImpl addressService;
+    private ProductServiceImpl productService;
 
     @Inject
     public UserServiceImpl() {
         this.userList = new ArrayList<>();
         addressService = new AddressServiceImpl();
+        productService = new ProductServiceImpl();
     }
 
     @Override
@@ -128,7 +132,7 @@ public class UserServiceImpl  implements UserService {
         userList.clear();
         try {
             if (RestApplication.con != null) {
-                String sql = "SELECT * FROM user";
+                String sql = "SELECT * FROM user WHERE valid = 0";
                 PreparedStatement statement = RestApplication.con.prepareStatement(sql);
                 ResultSet rs = statement.executeQuery();
                 while (rs.next()) {
@@ -157,11 +161,21 @@ public class UserServiceImpl  implements UserService {
     @Override
     public boolean deleteById(int id) {
         try {
-            if (RestApplication.con != null) {
-                String sql = "DELETE FROM `user` WHERE `user`.`id` = " + id + ";";
-                PreparedStatement statement = RestApplication.con.prepareStatement(sql);
-                statement.execute();
-                return true;
+            User tempUser = findById(id);
+            //Delete user address
+            boolean deletedAddress = addressService.deleteAddress(tempUser.getAddressid());
+            //Delete user own, unsold Products -> delete all valid and unvalid products but not the already sold
+            boolean deleteProducts = productService.deleteUnSoldProductsBySeller(id);
+
+            if(deletedAddress && deleteProducts) {
+                if (RestApplication.con != null) {
+                    //Not exactly delete, just set the valid to 1. User are "deleted" or passive if the valid fileds equals to 1.
+                    //We do not want to excactly delete user, because this user may have already sold product.
+                    String sql = "UPDATE `user` SET `valid` = '1' WHERE `user`.`id` = " + id + ";";
+                    PreparedStatement statement = RestApplication.con.prepareStatement(sql);
+                    statement.execute();
+                    return true;
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -204,7 +218,7 @@ public class UserServiceImpl  implements UserService {
                     return true;
                 }
                 else {
-                    throw new Exception("The gotted password did not match with the current password!");
+                    throw new Exception("Wrong password!");
                 }
             }
         } catch (Exception e) {
