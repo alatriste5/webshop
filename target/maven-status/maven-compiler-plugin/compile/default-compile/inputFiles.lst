@@ -8,6 +8,7 @@ D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\controll
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\services\UserService.java
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\services\ProductServiceImpl.java
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\services\AuthService.java
+D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\services\ActiveUserList.java
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\controller\UserController.java
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\HelloWorldEndpoint.java
 D:\dev\DevWebshop\webshop\src\main\java\com\webshopbeckend\webshop\rest\model\LoggedInUser.java

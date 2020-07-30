@@ -1,12 +1,10 @@
 package com.webshopbeckend.webshop.rest;
 
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
-import io.undertow.util.DateUtils;
-import sun.rmi.runtime.Log;
+import com.webshopbeckend.webshop.rest.services.ActiveUserList;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,15 +12,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 @ApplicationPath("/")
 public class RestApplication extends Application {
     public static Connection con;
-    public static ArrayList<LoggedInUser> activeUserList;
+    ArrayList<LoggedInUser> activeUserList;
 
     public RestApplication() {
-        activeUserList = new ArrayList<>();
+        ActiveUserList aul = ActiveUserList.getInstance();
+        activeUserList = aul.getActiveUserList();
+
         con = getConnection();
 
         /*I wrote this method to make sure that every user will be logged out after a couple of minutes.
@@ -67,7 +66,6 @@ public class RestApplication extends Application {
         }
         System.out.println("Autologgout went through. The result: There was " + beforenumber+ " active user. Removed: " + (beforenumber-activeUserList.size()) + ". Current active user: "+ activeUserList.size());
     }
-
 
 
 }

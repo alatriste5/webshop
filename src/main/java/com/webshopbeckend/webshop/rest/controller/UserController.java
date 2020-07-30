@@ -74,11 +74,10 @@ public class UserController {
     }
 
     @POST
-    @Path("/updatebyusername") //There is not need a token -> this called just after the user create first addresss
+    @Path("/updatebyusername") //There is not need a token -> this called just after the user create first address
     public boolean updateUserByUsername(User user) {
         System.out.println("updateUserByUsername called with " + user.getUsername());
             if (userService.updateUserAddressId(user)){
-                System.out.println("elvileg fasza");
                 return true;
             } else {
                 System.out.println("UserController error - updateUserByUsername");

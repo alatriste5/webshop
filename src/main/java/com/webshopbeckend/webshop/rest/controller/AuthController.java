@@ -3,15 +3,19 @@ package com.webshopbeckend.webshop.rest.controller;
 import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
 import com.webshopbeckend.webshop.rest.model.User;
+import com.webshopbeckend.webshop.rest.services.ActiveUserList;
 import com.webshopbeckend.webshop.rest.services.AddressServiceImpl;
 import com.webshopbeckend.webshop.rest.services.AuthService;
 import com.webshopbeckend.webshop.rest.services.UserServiceImpl;
+import sun.rmi.runtime.Log;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 @ApplicationScoped
 @Path("/authentication")
@@ -22,12 +26,15 @@ public class AuthController {
     AuthService authService;
     UserServiceImpl userService;
     AddressServiceImpl addressService;
+    ArrayList<LoggedInUser> activeUserList;
 
     @Inject
     public AuthController(){
         authService = new AuthService();
         userService = new UserServiceImpl();
         addressService = new AddressServiceImpl();
+        ActiveUserList aul = ActiveUserList.getInstance();
+        activeUserList = aul.getActiveUserList();
     }
 
     @POST
@@ -37,10 +44,10 @@ public class AuthController {
         try {
             LoggedInUser aU = authService.Login(user.getUsername(), user.getPassword());
 
-            String token = RestApplication.activeUserList.get(authService.getActiveUserListSize()-1).getToken();
+            String token = activeUserList.get(authService.getActiveUserListSize()-1).getToken();
 
-            System.out.println("Last logged in username: "+RestApplication.activeUserList.get(RestApplication.activeUserList.size()-1).getUsername() +
-                    "Active users db: "+RestApplication.activeUserList.size());
+            System.out.println("Last logged in username: "+activeUserList.get(activeUserList.size()-1).getUsername() +
+                    "Active users db: "+activeUserList.size());
 
                 return Response.ok(aU).build();
 

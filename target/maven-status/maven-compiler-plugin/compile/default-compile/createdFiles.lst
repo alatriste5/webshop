@@ -1,4 +1,5 @@
 com\webshopbeckend\webshop\rest\services\AuthService.class
+com\webshopbeckend\webshop\rest\services\ActiveUserList.class
 com\webshopbeckend\webshop\rest\services\AddressService.class
 com\webshopbeckend\webshop\rest\HelloWorldEndpoint.class
 com\webshopbeckend\webshop\rest\services\tokengenerate\RandomString.class
