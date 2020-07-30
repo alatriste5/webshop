@@ -2,7 +2,6 @@ package com.webshopbeckend.webshop.rest.services;
 
 import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.Product;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.sql.PreparedStatement;

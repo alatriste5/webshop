@@ -3,7 +3,6 @@ package com.webshopbeckend.webshop.rest.controller;
 import com.webshopbeckend.webshop.rest.model.Product;
 import com.webshopbeckend.webshop.rest.services.AuthService;
 import com.webshopbeckend.webshop.rest.services.ProductServiceImpl;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -17,7 +16,6 @@ import java.util.Collection;
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductController {
 
-    private String token;
     private ProductServiceImpl productService;
     private AuthService authService;
 

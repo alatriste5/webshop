@@ -7,7 +7,6 @@ import com.webshopbeckend.webshop.rest.model.SecretKey;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.encryption.Decoder;
 import com.webshopbeckend.webshop.rest.services.tokengenerate.RandomString;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;

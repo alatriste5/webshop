@@ -1,14 +1,11 @@
 package com.webshopbeckend.webshop.rest.services;
 
 import com.webshopbeckend.webshop.rest.RestApplication;
-import com.webshopbeckend.webshop.rest.model.Product;
 import com.webshopbeckend.webshop.rest.model.SecretKey;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.encryption.Decoder;
-
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

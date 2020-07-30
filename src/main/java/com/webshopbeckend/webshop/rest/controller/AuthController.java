@@ -1,20 +1,16 @@
 package com.webshopbeckend.webshop.rest.controller;
 
-import com.webshopbeckend.webshop.rest.RestApplication;
 import com.webshopbeckend.webshop.rest.model.LoggedInUser;
 import com.webshopbeckend.webshop.rest.model.User;
 import com.webshopbeckend.webshop.rest.services.ActiveUserList;
 import com.webshopbeckend.webshop.rest.services.AddressServiceImpl;
 import com.webshopbeckend.webshop.rest.services.AuthService;
 import com.webshopbeckend.webshop.rest.services.UserServiceImpl;
-import sun.rmi.runtime.Log;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @ApplicationScoped
@@ -59,7 +55,6 @@ public class AuthController {
 
     @POST
     @Path("/logout")
-    //@Consumes(MediaType.APPLICATION_JSON)
     public Response logoutUser(@QueryParam("auth") String token){
         System.out.println("Logout called");
         try {
