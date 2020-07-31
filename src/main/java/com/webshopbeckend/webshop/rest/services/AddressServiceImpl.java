@@ -49,6 +49,7 @@ public class AddressServiceImpl implements AddressService{
                     maxId++;
                     return maxId;
                 }
+                return 1;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

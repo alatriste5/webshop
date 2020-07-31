@@ -103,7 +103,9 @@ public class ProductController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean addProduct(Product prod, @QueryParam("auth") String token) {
+        System.out.println("Controller addProd");
         if(this.authService.checkTokenIsValid(token)) {
+            System.out.println("token ok");
             return productService.addProduct(prod);
         } else {
             System.out.println("ProductController error - addProduct called with wrong token: "+token);

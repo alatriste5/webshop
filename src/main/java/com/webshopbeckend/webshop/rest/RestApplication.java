@@ -29,7 +29,7 @@ public class RestApplication extends Application {
         but if any problems appear on that side the current logged in users never will be logged out.
         This method handle this problem.
         Every time the active user reach an endpoint i refresh the registeredIn field. If the user do not
-        make any acivity after 10 minutes this function logged out the inactive user from the activeUserList.
+        make any acivity after 10 minutes this function logged out the inactive user from the activeUserList automatically.
         With this we can make sure that our main list, the activeUserList only contains the active users.
          */
         Timer timer = new Timer();
@@ -41,8 +41,8 @@ public class RestApplication extends Application {
         },0,60000); //Run this check in every minute
     }
 
-    public static Connection getConnection() {
-        String url = "jdbc:mysql://localhost:3306/webshop?serverTimezone=UTC";
+    private static Connection getConnection() {
+        String url = "jdbc:mysql://localhost:3306/webshopdb?serverTimezone=UTC";
         String user = "root";
         String password = "";
         try {

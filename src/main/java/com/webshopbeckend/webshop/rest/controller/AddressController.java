@@ -36,7 +36,7 @@ public class AddressController {
 
             return Response.ok(addressid).build();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("AddressController addAddress error: " + e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
