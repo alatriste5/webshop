@@ -30,61 +30,86 @@ public class ProductController {
 
     @GET
     @Path("/valid")
-    public Collection<Product> findAllValidProduct(@DefaultValue("") @QueryParam("auth") String token){
+    public Response findAllValidProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValid(token)){
-            return this.productService.findAllProductByValid(1);
+            Collection<Product> resCol = this.productService.findAllProductByValid(1);
+            if(resCol != null) {
+                return Response.status(Response.Status.OK).entity(resCol).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Products not found").build();
+            }
         }
         else {
             System.out.println("ProductController error - findAllValidProduct called with wrong token: "+token);
-            return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
 
     @GET
     @Path("/unvalid")
-    public Collection<Product> findAllUnValidProduct(@DefaultValue("") @QueryParam("auth") String token){
+    public Response findAllUnValidProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValidAndAdmin(token)){
-            return this.productService.findAllProductByValid(0);
+            Collection<Product> resCol = this.productService.findAllProductByValid(0);
+            if(resCol != null) {
+                return Response.status(Response.Status.OK).entity(resCol).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Products not found").build();
+            }
         }
         else{
             System.out.println("ProductController error - findAllUnValidProduct called with wrong token: "+token);
-            return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
 
     @GET
     @Path("/sold")
-    public Collection<Product> findAllSoldProduct(@DefaultValue("") @QueryParam("auth") String token){
+    public Response findAllSoldProduct(@DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValid(token)){
-            return this.productService.findAllProductByValid(2);
+            Collection<Product> resCol =  this.productService.findAllProductByValid(2);
+            if(resCol != null) {
+                return Response.status(Response.Status.OK).entity(resCol).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Products not found").build();
+            }
         }
         else{
             System.out.println("ProductController error - findAllSoldProduct called with wrong token: "+token);
-            return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
     @GET
     @Path("/purchases/{id}")
-    public Collection<Product> findAllProductByCustomer(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token){
-
+    public Response findAllProductByCustomer(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token){
         if(this.authService.checkTokenIsValid(token)){
-            return this.productService.findAllProductByCustomeriId(id);
+            Collection<Product> resCol =  this.productService.findAllProductByCustomeriId(id);
+            if(resCol != null) {
+                return Response.status(Response.Status.OK).entity(resCol).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Products not found").build();
+            }
         }
         else{
             System.out.println("ProductController error - findAllProductByCustomer called with wrong token: "+token);
-            return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
 
     @GET
     @Path("/{id}")
-    public Product findById(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token) {
+    public Response findById(@PathParam("id") int id, @DefaultValue("") @QueryParam("auth") String token) {
         if(this.authService.checkTokenIsValid(token)){
-            return this.productService.findById(id);
+            Product resProd = this.productService.findById(id);
+            if(resProd != null){
+                return Response.status(Response.Status.OK).entity(resProd).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("Product not found").build();
+            }
         }
         else{
             System.out.println("ProductController error - findById called with wrong token: "+token);
-            return null;
+            //return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
 

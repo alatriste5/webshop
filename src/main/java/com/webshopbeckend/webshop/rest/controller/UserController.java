@@ -99,13 +99,18 @@ public class UserController {
 
     @GET
     @Path("/username/{id}")
-    public User getusername(@PathParam("id") int id, @QueryParam("auth") String token) {
+    public Response getusername(@PathParam("id") int id, @QueryParam("auth") String token) {
         if(this.authService.checkTokenIsValid(token)) {
-            return this.userService.getUsername(id);
+            User resUser =  this.userService.getUsername(id);
+            if(resUser != null) {
+                return Response.status(Response.Status.OK).entity(resUser).build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST).entity("User not found").build();
+            }
         }
         else{
             System.out.println("UserController error - getusername called with wrong token: "+token);
-            return null;
+            return Response.status(Response.Status.BAD_REQUEST).entity("You are not allowed to get this data").build();
         }
     }
 
