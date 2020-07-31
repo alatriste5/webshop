@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class UserServiceImpl  implements UserService {
-    //TODO: Add Uname és mail validation ott is működjön
 
     private ArrayList<User> userList;
     public static String secretKey = SecretKey.getSecretKey();

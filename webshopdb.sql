@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2020. Júl 31. 11:53
+-- Létrehozás ideje: 2020. Júl 31. 12:59
 -- Kiszolgáló verziója: 10.4.13-MariaDB
 -- PHP verzió: 7.4.8
 
@@ -79,7 +79,8 @@ INSERT INTO `products` (`id`, `name`, `price`, `details`, `sellerid`, `customeri
 (8, 'American football', 18, 'Ball of the best teamsport', 1, 6, '2020-07-31 06:47:54', 2, 'https://images-na.ssl-images-amazon.com/images/I/91FzIp4UdjL._AC_SX522_.jpg'),
 (9, 'Mouse', 7, 'Computer mouse', 2, 0, NULL, 1, 'https://assets.logitech.com/assets/64365/2/wireless-mouse-m185.png'),
 (10, 'Bicycle', 49, 'General bicycle', 2, 0, NULL, 0, 'https://cdn.shopify.com/s/files/1/1772/1703/t/16/assets/cowboy-3-absolute-black_w_6.png?v=15537051773153245689'),
-(11, 'Dragon balls', 99, 'Crystal dragon balls', 1, 0, NULL, 1, 'https://images-na.ssl-images-amazon.com/images/I/61G3zsBeDSL._AC_SL1005_.jpg');
+(11, 'Dragon balls', 99, 'Crystal dragon balls', 1, 0, NULL, 1, 'https://images-na.ssl-images-amazon.com/images/I/61G3zsBeDSL._AC_SL1005_.jpg'),
+(13, 'Radio', 10, 'Old radio', 5, 1, '2020-07-31 10:58:57', 2, 'https://assets.mmsrg.com/isr/166325/c1/-/pixelboxx-mss-68062210/mobile_786_587_png/ROADSTAR-HRA-1500-N-fa-retro-r%C3%A1di%C3%B3');
 
 -- --------------------------------------------------------
 
@@ -107,7 +108,8 @@ INSERT INTO `user` (`id`, `username`, `name`, `email`, `password`, `addressid`, 
 (1, 'admin', 'Admin Janos', 'admin@admin.com', 'Yckg2sRG1XTa6nHPdIwdEg==', 1, 'Admin', '2020-07-31 09:45:18', 0),
 (2, 'balazs799', 'Tóth Balázs', 'balazs799@gmail.com', 'Yckg2sRG1XTa6nHPdIwdEg==', 2, 'Admin', '2020-07-31 09:45:50', 0),
 (3, 'Teszt10', 'Temp Bela', 'asdfa@sdfa.com', 'Yckg2sRG1XTa6nHPdIwdEg==', 3, 'User', '2020-07-31 09:46:12', 0),
-(4, 'fetomy', 'Tom Tom', 'tom@tomtom.com', 'mFtwTt+oWtkG8zkf+YW1Mw==', 4, 'User', '2020-07-31 09:46:44', 0);
+(4, 'fetomy', 'Tom Tom', 'tom@tomtom.com', 'mFtwTt+oWtkG8zkf+YW1Mw==', 4, 'User', '2020-07-31 09:46:44', 0),
+(5, 'Teszt5', 'Öt Teszt', 'ot@teszt.com', 'Yckg2sRG1XTa6nHPdIwdEg==', 5, 'User', '2020-07-31 10:55:51', 1);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -142,13 +144,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT a táblához `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT a táblához `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Megkötések a kiírt táblákhoz
